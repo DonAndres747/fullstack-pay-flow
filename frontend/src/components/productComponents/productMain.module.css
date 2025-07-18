@@ -1,0 +1,34 @@
+.productBody {
+    display: flex;
+    flex-direction: column;
+    padding: 0 2%;
+    max-height: 100vh;
+}
+
+.productList {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px;
+    margin-top: 16px;
+    overflow-y: scroll;
+}
+
+
+.productList::-webkit-scrollbar {
+    display: none;
+}
+
+/* Tablet */
+@media (min-width: 600px) {
+    .productList {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+}
+
+/* Escritorio*/
+@media (min-width: 900px) {
+    .productList {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
