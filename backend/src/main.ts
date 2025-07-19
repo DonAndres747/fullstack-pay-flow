@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
+import * as crypto from 'crypto';  
 
-import * as crypto from 'crypto';
 import { AppModule } from './app.module';
 
 (global as any).crypto = crypto;

@@ -1,11 +1,11 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { Transaction } from 'typeorm';
-import { TransactionService } from './services/transaction.service';
-import { TransactionController } from './controllers/transaction.controller'
 import { ProductModule } from '../product/product.module';
 import { CustomerModule } from '../customer/customer.module';
+import { Transaction } from './entities/transaction.entity';
+import { TransactionService } from './services/transaction.service';
+import { TransactionController } from './controllers/transaction.controller';
 
 @Module({
   imports: [
@@ -13,8 +13,8 @@ import { CustomerModule } from '../customer/customer.module';
     forwardRef(() => ProductModule),
     forwardRef(() => CustomerModule),
   ],
+  controllers: [TransactionController],
   providers: [TransactionService],
-  controllers: [TransactionController]
+  exports: [TransactionService],
 })
 export class TransactionModule { }
- 

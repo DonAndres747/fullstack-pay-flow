@@ -9,12 +9,6 @@ export class Transaction {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @ManyToOne(() => Product, (product) => product.transaction)
-    product: Product;
-
-    @ManyToOne(() => Customer, (customer) => customer.transaction, { nullable: true })
-    customer: Customer;
-
     @Column({ type: 'int', default: 1 })
     quantity: number;
 
@@ -33,4 +27,10 @@ export class Transaction {
 
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @ManyToOne(() => Product, (product) => product.transaction)
+    product: Product;
+
+    @ManyToOne(() => Customer, (customer) => customer.transaction, { nullable: true })
+    customer: Customer;
 }
