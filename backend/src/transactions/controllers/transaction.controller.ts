@@ -8,8 +8,8 @@ export class TransactionController {
     constructor(private readonly transactionService: TransactionService) { }
 
     @Post()
-    create(@Body() body) {
-        return this.transactionService.create(body);
+    registerTransaction(@Body() body) {
+        return this.transactionService.registerTransaction(body);
     }
 
     @Get(':id')

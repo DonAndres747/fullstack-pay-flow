@@ -12,7 +12,7 @@ export class TransactionService {
         private readonly transactionRepo: Repository<Transaction>,
     ) { }
 
-    create(data: Partial<Transaction>) {
+    registerTransaction(data: Partial<Transaction>) {
         const transaction = this.transactionRepo.create(data);
         return this.transactionRepo.save(transaction);
     }
