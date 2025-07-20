@@ -1,20 +1,23 @@
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import { Card, CardContent, CardActions, Button } from '@mui/material';
+import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 
 import CreditCardModal from '../../modals/creditCardModal';
 import styles from './productCard.module.css';
+import { setDeliveryInfo, setCardLast4Digits, setProduct, setCardType, setReqQty } from '../../../features/checkoutSlice'
 
 const ProductCard = ({ product }) => {
-    // const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [reqQty, setReqQty] = useState(1);
+    const dispatch = useDispatch();
+
+    const [reqQty, setReqQtity] = useState(1);
     const [modalOpen, setModalOpen] = useState(false);
 
     function handleReqQty() {
         const newQty = reqQty <= product.stock ? reqQty : product.stock;
-        setReqQty(newQty);
+        setReqQtity(newQty);
     }
 
     function handleBuy() {
@@ -24,10 +27,23 @@ const ProductCard = ({ product }) => {
         }
 
         setModalOpen(true);
-        // dispatch(buyProduct({ id: product.id, qty: reqQty }))
     }
 
-    function handlePay() {
+    function handlePay(deliveryDat, lastFour, cardType) {
+        dispatch(setDeliveryInfo({
+            ...deliveryDat
+        }));
+        dispatch(setCardLast4Digits(lastFour));
+        dispatch(setCardType(cardType));
+        dispatch(setProduct({
+            id: product.id,
+            name: product.name,
+            description: product.description,
+            price: product.price,
+            stock: product.stock
+        }));
+        dispatch(setReqQty(reqQty));
+
         setModalOpen(false);
         navigate(`/pay/${product.id}`);
     }
@@ -45,10 +61,11 @@ const ProductCard = ({ product }) => {
 
                 <div className={styles.info}>
                     <div className={styles.name}>{product.name}</div>
-                    <div className={styles.description}>{product.description}</div>
+                    <div className={styles.informationText}>{product.description}</div>
+                    <div className={styles.informationText}>{product.price}</div>
                     <div className={styles.stock}>
                         Cantidad:
-                        <div className={product.stock <= 0 && styles.noStock}> {product.stock}</div>
+                        <div className={product.stock <= 0 ? styles.noStock : null}> {product.stock}</div>
                     </div>
                 </div>
             </CardContent>
@@ -56,7 +73,7 @@ const ProductCard = ({ product }) => {
             <CardActions sx={{ justifyContent: 'flex-end' }}>
                 <input type='number' min={1} max={product.stock}
                     value={reqQty}
-                    onChange={(e) => setReqQty(e.target.value)}
+                    onChange={(e) => setReqQtity(e.target.value)}
                     onBlur={() => handleReqQty()}
                     className={styles.reqQty}
                     disabled={product.stock === 0}
@@ -86,7 +103,7 @@ const ProductCard = ({ product }) => {
             <CreditCardModal
                 open={modalOpen}
                 onClose={() => setModalOpen(false)}
-                onComplete={() => handlePay()}
+                onComplete={(deliveryDat, lastFour, cardType) => handlePay(deliveryDat, lastFour, cardType)}
             />
         </Card >
     );

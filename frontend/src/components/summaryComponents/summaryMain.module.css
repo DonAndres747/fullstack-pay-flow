@@ -1,0 +1,155 @@
+.summary {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2%;
+    background-color: #f9f9f9;
+}
+
+.summarTittle {
+    width: 300px;
+    height: 50px;
+    display: inherit;
+    flex-direction: column;
+    align-items: center;
+    background-color: #2c2a29;
+    color: #117707;
+    border-radius: 50px;
+    margin: 20px 0 20px 0;
+}
+
+.summarTittle h1 {
+    margin: 0;
+}
+
+.progressImg,
+.summaryBody,
+.summaryFootter {
+    width: 90vw;
+    min-width: 90vw;
+    max-width: 90vw;
+    border-radius: 16px;
+    background-color: white;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .102751);
+}
+
+.summary hr {
+    width: 89vw;
+    border-color: lightgrey;
+}
+
+.summaryBody {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 2% 1%;
+    row-gap: 1rem;
+}
+
+.summaryBodyDetails {
+    min-height: 20vh;
+    padding: 1% 3%;
+    border: 1px solid #cbe85d;
+    border-radius: 14px;
+}
+
+.summaryBodyDetails {
+    padding: 1.5rem 2rem;
+    border: 1px solid #cbe85d;
+    border-radius: 14px;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.75rem;
+    font-family: 'Segoe UI', sans-serif;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .102751);
+}
+
+.summaryBodyDetails h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.3rem;
+}
+
+.summaryBodyDetails p {
+    margin: 0;
+    color: #555;
+    font-size: 0.95rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Tablet*/
+@media (min-width: 600px) {
+    .summaryBody {
+        grid-template-columns: repeat(3, 32%);
+        justify-content: space-evenly;
+        padding: 1% 0;
+    }
+
+    .summaryBodyDetails {
+        min-height: 30vh;
+    }
+
+    .progressImg,
+    .summaryBody,
+    .summaryFootter {
+        border-radius: 14px;
+    }
+
+    .summary hr {
+        width: 89vw;
+    }
+
+    .hiddenNumbers {
+        display: none;
+    }
+}
+
+@media (min-width: 900px) {
+
+    .progressImg,
+    .summaryBody,
+    .summaryFootter {
+        width: 70vw;
+        min-width: 70vw;
+        max-width: 70vw;
+    }
+
+    .summary hr {
+        width: 69vw;
+    }
+
+    .summaryBodyDetails p {
+        margin: 0;
+        color: #555;
+        font-size: 0.95rem;
+        display: flex;
+        justify-content: space-between;
+    }
+
+
+    .hiddenNumbers {
+        display: inline;
+    }
+}
+
+.summaryFootter {
+    height: 50px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .102751);
+}
+
+
+.summaryFootter button {
+    height: 30px;
+    margin: 10px;
+}

@@ -1,11 +1,12 @@
-import CreditCardOutlinedIcon from '@mui/icons-material/CreditCardOutlined';
 import { useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, TextField, Button, DialogActions } from '@mui/material';
 
 import styles from './creditCardModal.module.css'
 
 import creditCardFormModel from './creditCardFormModel';
+import getCardIcon from '../../utils/creditCardLogo';
 import { validateCardForm, getCardType } from '../../utils/creditCardValidator';
+
 
 const CreditCardModal = ({ open, onClose, onComplete }) => {
     const [form, setForm] = useState(creditCardFormModel);
@@ -24,19 +25,23 @@ const CreditCardModal = ({ open, onClose, onComplete }) => {
         setForm(newForm);
     }
 
+    function lastFourData() {
+        return form.cardNumber.slice(form.cardNumber.length - 5, form.cardNumber.length);
+    }
+
     function handleSubmit() {
         const validationErrors = validateCardForm(form);
         setErrors(validationErrors);
 
         if (Object.keys(validationErrors).length === 0) {
-            onComplete();
+            const lastFour = lastFourData()
+            onComplete(
+                {
+                    name: form.deliveryName,
+                    address: form.deliveryAddress,
+                    phone: form.deliveryPhone
+                }, lastFour, cardType);
         }
-    }
-
-    function getCardIcon() {
-        if (cardType === 'visa') return <img src="/visa.png" alt="Visa" height={24} />;
-        if (cardType === 'mastercard') return <img src="/mastercard.png" alt="MasterCard" height={24} />;
-        return <CreditCardOutlinedIcon />;
     }
 
     return (
@@ -46,7 +51,7 @@ const CreditCardModal = ({ open, onClose, onComplete }) => {
             fullWidth>
             <DialogTitle
                 sx={{
-                    backgroundColor: '#f2fdf1',
+                    backgroundColor: '#2c2a29',
                     color: '#117707'
                 }}
             >Credit Card Payment</DialogTitle>
@@ -75,7 +80,7 @@ const CreditCardModal = ({ open, onClose, onComplete }) => {
                     helperText={errors.cardNumber}
                     className={styles.input}
                     InputProps={{
-                        endAdornment: getCardIcon(),
+                        endAdornment: getCardIcon(cardType),
                     }}
                 />
                 <TextField

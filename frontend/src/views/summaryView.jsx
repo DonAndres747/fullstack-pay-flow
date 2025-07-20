@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
-const SummaryView = () => {
+import SummaryMain from '../components/summaryComponents/summaryMain';
+
+const PaymentView = () => {
     return (
-        <div>
-            <h2>Productos disponibles</h2>
-        </div>
+        <SummaryMain />
     );
 };
 
-export default SummaryView;
+export default PaymentView;
