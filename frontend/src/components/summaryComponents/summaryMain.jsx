@@ -1,16 +1,18 @@
-import { useEffect, useState } from 'react'
-import { Button, Snackbar, Alert } from '@mui/material';
+import { useEffect } from 'react'
+import { Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import getCardIcon from '../../utils/creditCardLogo'
 import styles from './summaryMain.module.css'
-import { useNavigate } from 'react-router-dom';
 import { registerTransaction } from '../../features/transactionSlice'
-import { setTransactionId, getCustomerId } from '../../features/checkoutSlice'
+import { setTransactionId, getCustomerId, handlePayment } from '../../features/checkoutSlice'
 
 const SummaryMain = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    const transaction = useSelector((state) => state.transaction);
     const checkout = useSelector((state) => state.checkout);
 
     const delivery = checkout.deliveryInfo;
@@ -18,6 +20,8 @@ const SummaryMain = () => {
     const reqQty = checkout.reqQty;
     const cardDigits = checkout.cardLast4Digits;
     const cardType = checkout.cardType;
+ 
+    
 
     useEffect(() => {
         if (!checkout.product || !checkout.deliveryInfo || !checkout.cardLast4Digits) {
@@ -36,13 +40,26 @@ const SummaryMain = () => {
             })).unwrap();
 
             dispatch(setTransactionId(result.transactionId));
-
-            alert("Your purchase was successful!")
+            handlePay();
         } catch (error) {
             console.log("error", error);
             alert("Something went wrong :(")
         }
     }
+
+    const handlePay = async () => { 
+        dispatch(handlePayment({
+            amountInCents: Math.round(reqQty * product.price * 100),
+            reference: transaction.transactionId,
+            customerEmail: delivery.email,
+            cc: delivery.cc,
+            customerData: {
+                phone_number: delivery.phone,
+                full_name: delivery.name,
+            }, 
+            cardToken: checkout.cardToken
+        }));
+    };
 
     return (
         (checkout.product || checkout.delivery || checkout.cardDigits) ? <div className={styles.summary}>
@@ -55,6 +72,7 @@ const SummaryMain = () => {
                 <div className={styles.summaryBodyDetails}>
                     <h3>Shipping to</h3>
                     <p><span>Customer Name:</span> <span>{delivery.name}</span></p>
+                    <p><span>Customer Email:</span> <span>{delivery.email}</span></p>
                     <p><span>Address:</span> <span>{delivery.address}</span></p>
                     <p><span>Teléfono:</span> <span>{delivery.phone}</span></p>
                 </div>
@@ -73,6 +91,7 @@ const SummaryMain = () => {
                             {cardDigits}
                         </span>
                         <span>{getCardIcon(cardType)}</span></p>
+                    <p><span>CC:</span> <span>{delivery.cc}</span></p>
                     <p><span>total:</span> <span>{product.price * reqQty}</span></p>
                 </div>
             </div>

@@ -8,7 +8,7 @@ export class TransactionController {
     constructor(private readonly transactionService: TransactionService) { }
 
     @Post()
-    registerTransaction(@Body() body) { 
+    registerTransaction(@Body() body) {
         return this.transactionService.registerTransaction(body);
     }
 
@@ -18,7 +18,7 @@ export class TransactionController {
     }
 
     @Patch(':id/status')
-    updateStatus(@Param('id') id: string, @Body() body: { status: TransactionStatus; transactionId?: string }) {
-        return this.transactionService.updateStatus(id, body.status, body.transactionId);
+    updateStatus(@Param('id') id: string, @Body() body: { status: TransactionStatus; }) {
+        return this.transactionService.updateStatus(id, body.status);
     }
 }

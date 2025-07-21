@@ -1,25 +1,48 @@
 import { useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, TextField, Button, DialogActions } from '@mui/material';
-
-import styles from './creditCardModal.module.css'
+import { useDispatch } from 'react-redux';
 
 import creditCardFormModel from './creditCardFormModel';
 import getCardIcon from '../../utils/creditCardLogo';
+import styles from './creditCardModal.module.css'
 import { validateCardForm, getCardType } from '../../utils/creditCardValidator';
+import { handleTokenize, setCardToken } from '../../features/checkoutSlice';
 
 
 const CreditCardModal = ({ open, onClose, onComplete }) => {
+    const dispatch = useDispatch();
+
     const [form, setForm] = useState(creditCardFormModel);
     const [errors, setErrors] = useState({});
     const [cardType, setCardType] = useState('unknown');
 
     function handleChange(e) {
         const { name, value } = e.target;
-        const newForm = { ...form, [name]: value }
+        let newForm = { ...form, [name]: value }
 
         if (name === 'cardNumber') {
             const type = getCardType(value);
             setCardType(type);
+
+            const formattedValue = value
+                .replace(/\D/g, '')
+                .replace(/(.{4})(?=.)/g, '$1 ')
+                .slice(0, 19);
+
+            newForm = {
+                ...form, [name]: formattedValue.trim()
+            }
+        } else if (name === 'expDate') {
+            const formattedValue = value
+                .replace(/\D/g, '')
+                .slice(0, 4)
+                .replace(/(.{2})(?=.)/g, '$1/');
+
+            newForm = {
+                ...form, [name]: formattedValue
+            }
+        } else if (name === 'cvv') {
+            newForm[name] = value.slice(0, 3);
         }
 
         setForm(newForm);
@@ -34,10 +57,19 @@ const CreditCardModal = ({ open, onClose, onComplete }) => {
         setErrors(validationErrors);
 
         if (Object.keys(validationErrors).length === 0) {
+            dispatch(handleTokenize({
+                name: form.name,
+                cardNumber: form.cardNumber.replaceAll(' ', ''),
+                cvv: form.cvv,
+                expDate: form.expDate
+            }))
+
             const lastFour = lastFourData()
             onComplete(
                 {
                     name: form.deliveryName,
+                    email: form.deliveryEmailAddress,
+                    cc: form.cc,
                     address: form.deliveryAddress,
                     phone: form.deliveryPhone
                 }, lastFour, cardType);
@@ -67,6 +99,17 @@ const CreditCardModal = ({ open, onClose, onComplete }) => {
                     onChange={handleChange}
                     error={!!errors.name}
                     helperText={errors.name}
+                    className={styles.input}
+                />
+                <TextField
+                    name="cc"
+                    label="CC"
+                    fullWidth
+                    margin="normal"
+                    value={form.cc}
+                    onChange={handleChange}
+                    error={!!errors.cc}
+                    helperText={errors.cc}
                     className={styles.input}
                 />
                 <TextField
@@ -115,6 +158,17 @@ const CreditCardModal = ({ open, onClose, onComplete }) => {
                     onChange={handleChange}
                     error={!!errors.deliveryName}
                     helperText={errors.deliveryName}
+                    className={styles.input}
+                />
+                <TextField
+                    name="deliveryEmailAddress"
+                    label="Delivery Email Address"
+                    fullWidth
+                    margin="normal"
+                    value={form.deliveryEmailAddress}
+                    onChange={handleChange}
+                    error={!!errors.deliveryEmailAddress}
+                    helperText={errors.deliveryEmailAddress}
                     className={styles.input}
                 />
                 <TextField

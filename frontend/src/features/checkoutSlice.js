@@ -1,17 +1,21 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { customerService } from '../services/customerService';
+import { billingService } from '../services/billService';
 
 const oldData = JSON.parse(localStorage.getItem('jsonData'));
 const initialState = {
     deliveryInfo: {
         id: '',
         name: '',
+        cc: '',
+        email: '',
         address: '',
-        phone: '',
+        phone: ''
     },
     product: null,
     reqQty: 0,
+    cardToken: null,
     cardLast4Digits: '',
     cardType: '',
     transactionId: null,
@@ -21,6 +25,23 @@ export const getCustomerId = createAsyncThunk(
     'checkuot/customerId',
     async (payload) => {
         const response = await customerService.getCustomerId(payload);
+        return response;
+    }
+);
+
+export const handleTokenize = createAsyncThunk(
+    'checkuot/tokenize',
+    async (payload) => {
+        const token = await billingService.handleTokenize(payload);
+
+        return token;
+    }
+);
+
+export const handlePayment = createAsyncThunk(
+    'checkuot/payment',
+    async (payload) => {
+        const response = await billingService.handlePayment(payload);
         return response;
     }
 );
@@ -39,6 +60,10 @@ const checkoutSlice = createSlice({
         },
         setReqQty(state, action) {
             state.reqQty = action.payload;
+            saveData(state);
+        },
+        setCardToken: (state, action) => {
+            state.cardToken = action.payload;
             saveData(state);
         },
         setCardLast4Digits(state, action) {
@@ -66,6 +91,11 @@ const checkoutSlice = createSlice({
 
                 saveData(state);
             })
+            .addCase(handleTokenize.fulfilled, (state, action) => {
+                state.cardToken = action.payload.id;
+
+                saveData(state);
+            })
     },
 });
 
@@ -78,6 +108,7 @@ export const {
     setDeliveryInfo,
     setProduct,
     setReqQty,
+    setCardToken,
     setCardLast4Digits,
     setCardType,
     setTransactionId,

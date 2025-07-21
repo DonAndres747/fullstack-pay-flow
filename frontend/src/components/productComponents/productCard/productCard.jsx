@@ -11,7 +11,7 @@ import { setDeliveryInfo, setCardLast4Digits, setProduct, setCardType, setReqQty
 const ProductCard = ({ product }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
+ 
     const [reqQty, setReqQtity] = useState(1);
     const [modalOpen, setModalOpen] = useState(false);
 
@@ -38,6 +38,7 @@ const ProductCard = ({ product }) => {
         dispatch(setProduct({
             id: product.id,
             name: product.name,
+            cc: product.cc,
             description: product.description,
             price: product.price,
             stock: product.stock
@@ -45,6 +46,8 @@ const ProductCard = ({ product }) => {
         dispatch(setReqQty(reqQty));
 
         setModalOpen(false);
+
+        alert('Information processed successfully')
         navigate(`/pay/${product.id}`);
     }
 

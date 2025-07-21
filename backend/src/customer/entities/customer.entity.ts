@@ -10,6 +10,9 @@ export class Customer {
     @Column()
     name: string;
 
+    @Column({ length: 255 })
+    email: string;
+
     @Column({ type: 'text', nullable: true })
     address: string;
 

@@ -13,7 +13,7 @@ export class TransactionService {
     ) { }
 
     registerTransaction(data: Partial<Transaction>) {
-        const transaction = this.transactionRepo.create(data); 
+        const transaction = this.transactionRepo.create(data);
 
         return this.transactionRepo.save(transaction);
     }
@@ -25,7 +25,7 @@ export class TransactionService {
         });
     }
 
-    async updateStatus(id: string, status: TransactionStatus, transactionId?: string) {
+    async updateStatus(id: string, status: TransactionStatus) {
         const transaction = await this.findById(id);
         if (!transaction) return null;
 

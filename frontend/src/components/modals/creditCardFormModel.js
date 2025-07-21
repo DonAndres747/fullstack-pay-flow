@@ -3,7 +3,9 @@ const creditCardFormModel = {
     cardNumber: '',
     expDate: '',
     cvv: '',
+    cc: '',
     deliveryName: '',
+    deliveryEmailAddress: '',
     deliveryAddress: '',
     deliveryPhone: '',
 };
