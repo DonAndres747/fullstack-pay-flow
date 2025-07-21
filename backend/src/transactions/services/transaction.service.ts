@@ -12,26 +12,29 @@ export class TransactionService {
         private readonly transactionRepo: Repository<Transaction>,
     ) { }
 
-    registerTransaction(data: Partial<Transaction>) {
+    registerTransaction(data: Partial<Transaction>): Promise<Transaction | null> {
         const transaction = this.transactionRepo.create(data);
 
         return this.transactionRepo.save(transaction);
     }
 
-    findById(id: string) {
+    findById(id: string): Promise<Transaction | null> {
         return this.transactionRepo.findOne({
             where: { id },
             relations: ['product', 'customer'],
         });
     }
 
-    async updateStatus(id: string, status: TransactionStatus) {
-        const transaction = await this.findById(id);
+    async updateStatus(id: string, status: TransactionStatus): Promise<Partial<Transaction> | null> {
+        const transaction = await this.findById(id); 
         if (!transaction) return null;
 
         transaction.status = status;
         if (id) transaction.id = id;
 
-        return this.transactionRepo.save(transaction);
+        this.transactionRepo.save(transaction);
+        const data: Partial<Transaction> = { id: transaction.id, status: transaction.status,  updatedAt: new Date()}
+
+        return data;
     }
 }

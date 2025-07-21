@@ -1,23 +1,22 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://api-sandbox.co.uat.wompi.dev/v1';
-const PUBLIC_KEY = 'pub_stagtest_g2u0HQd3ZMh05hsSgTS2lUV8t3s4mOt7';
+const BASE_URL = process.env.REACT_APP_WOMPI_BASE_URL;
+const PUBLIC_KEY = process.env.REACT_APP_WOMPI_PUBLIC_KEY;
 
 class BillingService {
-
     handlePayment = async (payload) => {
-        try {  
+        try {
             const token = await this.getAcceptanceToken();
 
             const response = await this.registerPayment({
                 acceptance_token: token.data.presigned_acceptance.acceptance_token,
                 accept_personal_auth: token.data.presigned_personal_data_auth.acceptance_token,
                 ...payload
-            })
- 
+            });
+
             return response;
         } catch (error) {
-
+            console.log("handlePayment error:", error);
         }
     }
 
@@ -27,7 +26,7 @@ class BillingService {
             const response = await axios.get(url);
             return response.data;
         } catch (error) {
-            console.log("error:", error);
+            console.log("getAcceptanceToken error:", error);
         }
     }
 
@@ -41,7 +40,7 @@ class BillingService {
         reference,
         cardToken
     }) => {
-        try {  
+        try {
             const payload = {
                 acceptance_token,
                 accept_personal_auth,
@@ -73,19 +72,19 @@ class BillingService {
 
             const headers = {
                 Authorization: `Bearer ${PUBLIC_KEY}`
-            }; 
+            };
 
             const response = await axios.post(`${BASE_URL}/transactions`, payload, { headers });
             return response.data;
         } catch (error) {
-            console.log("error:", error);
+            console.log("registerPayment error:", error);
         }
-    };
+    }
 
     handleTokenize = async (cardInfo) => {
-        try {  
+        try {
             const response = await axios.post(
-                'https://api-sandbox.co.uat.wompi.dev/v1/tokens/cards',
+                `${BASE_URL}/tokens/cards`,
                 {
                     number: cardInfo.cardNumber,
                     cvc: cardInfo.cvv,
@@ -100,13 +99,12 @@ class BillingService {
                 }
             );
 
-            const data = response.data.data;
-            return data;
+            return response.data.data;
         } catch (error) {
             alert('Credit card information could not be processed');
-            return error
+            return error;
         }
     }
-};
+}
 
 export const billingService = new BillingService();

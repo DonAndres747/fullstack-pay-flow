@@ -6,7 +6,7 @@ import creditCardFormModel from './creditCardFormModel';
 import getCardIcon from '../../utils/creditCardLogo';
 import styles from './creditCardModal.module.css'
 import { validateCardForm, getCardType } from '../../utils/creditCardValidator';
-import { handleTokenize, setCardToken } from '../../features/checkoutSlice';
+import { handleTokenize } from '../../features/checkoutSlice';
 
 
 const CreditCardModal = ({ open, onClose, onComplete }) => {

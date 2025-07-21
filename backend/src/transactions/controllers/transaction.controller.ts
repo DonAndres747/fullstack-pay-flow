@@ -18,7 +18,7 @@ export class TransactionController {
     }
 
     @Patch(':id/status')
-    updateStatus(@Param('id') id: string, @Body() body: { status: TransactionStatus; }) {
+    updateStatus(@Param('id') id: string, @Body() body: { status: TransactionStatus; }) { 
         return this.transactionService.updateStatus(id, body.status);
     }
 }

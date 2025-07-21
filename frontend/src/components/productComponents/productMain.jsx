@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import ProductCard from './productCard/productCard';
 import styles from './productMain.module.css'
+import { getItems } from '../../features/productSlice';
 import { resetCheckout } from '../../features/checkoutSlice'
 
 const ProductMain = () => {
@@ -11,9 +12,8 @@ const ProductMain = () => {
     const products = useSelector((state) => state.products);
 
     useEffect(() => {
-        //we delete the information from the customer, order and billing everytime we charge main view
-        //this to avoid the customer entering with the rows or by the url 
         dispatch(resetCheckout());
+        dispatch(getItems());
     }, [])
 
     return (

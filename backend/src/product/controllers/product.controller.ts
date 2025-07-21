@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe } from "@nestjs/common";
+import { Body, Controller, Get, Param, ParseIntPipe, Patch } from "@nestjs/common";
 
 import { ProductService } from "../services/product.service";
 
@@ -14,5 +14,10 @@ export class ProductController {
     @Get(':id')
     find(@Param('id', ParseIntPipe) id: number) {
         return this.productService.findOne(id);
+    }
+
+    @Patch(':id/qty')
+    updateQty(@Param('id') id: number, @Body() body) {
+        return this.productService.updateStock(id, body.reqQty);
     }
 }

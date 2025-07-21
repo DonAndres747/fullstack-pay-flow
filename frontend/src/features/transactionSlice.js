@@ -12,7 +12,7 @@ const initialState = oldData || {
 
 export const registerTransaction = createAsyncThunk(
     'transaction/registerTransaction',
-    async (payload) => {   
+    async (payload) => { 
         const response = await transactionService.registerNewTransaction(payload);
         saveData(response);
         return response;
@@ -21,8 +21,8 @@ export const registerTransaction = createAsyncThunk(
 
 export const updateTransactionStatus = createAsyncThunk(
     'transaction/updateTransactionStatus',
-    async (payload) => {
-        const response = await transactionService.updateStatus(payload);
+    async (payload) => { 
+        const response = await transactionService.udpateTransactionStatus(payload);
         saveData(response);
         return response;
     }

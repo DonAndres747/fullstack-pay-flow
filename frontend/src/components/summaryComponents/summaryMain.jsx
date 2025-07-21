@@ -5,8 +5,9 @@ import { useNavigate } from 'react-router-dom';
 
 import getCardIcon from '../../utils/creditCardLogo'
 import styles from './summaryMain.module.css'
-import { registerTransaction } from '../../features/transactionSlice'
+import { registerTransaction, updateTransactionStatus } from '../../features/transactionSlice'
 import { setTransactionId, getCustomerId, handlePayment } from '../../features/checkoutSlice'
+import { updateStock } from '../../features/productSlice'
 
 const SummaryMain = () => {
     const navigate = useNavigate();
@@ -20,8 +21,8 @@ const SummaryMain = () => {
     const reqQty = checkout.reqQty;
     const cardDigits = checkout.cardLast4Digits;
     const cardType = checkout.cardType;
- 
-    
+
+
 
     useEffect(() => {
         if (!checkout.product || !checkout.deliveryInfo || !checkout.cardLast4Digits) {
@@ -40,25 +41,53 @@ const SummaryMain = () => {
             })).unwrap();
 
             dispatch(setTransactionId(result.transactionId));
-            handlePay();
+
+            //We take the reference directly bc it's not updated before the whole process finishes 
+            handlePay(result.transactionId);
         } catch (error) {
             console.log("error", error);
             alert("Something went wrong :(")
         }
     }
 
-    const handlePay = async () => { 
-        dispatch(handlePayment({
-            amountInCents: Math.round(reqQty * product.price * 100),
-            reference: transaction.transactionId,
-            customerEmail: delivery.email,
-            cc: delivery.cc,
-            customerData: {
-                phone_number: delivery.phone,
-                full_name: delivery.name,
-            }, 
-            cardToken: checkout.cardToken
-        }));
+    const handlePay = async (reference) => {
+        try {  
+            dispatch(handlePayment({
+                amountInCents: Math.round(reqQty * product.price * 100),
+                reference: reference,
+                customerEmail: delivery.email,
+                cc: delivery.cc,
+                customerData: {
+                    phone_number: delivery.phone,
+                    full_name: delivery.name,
+                },
+                cardToken: checkout.cardToken
+            }));
+
+            dispatch(updateTransactionStatus({
+                transactionId: reference,
+                status: 'COMPLETED'
+            }));
+
+            dispatch(updateStock({
+                id: product.id,
+                reqQty
+            }));
+
+            alert("Payment Succesfull 😁");
+            navigate('/');
+        } catch (error) {
+            console.log(error);
+ 
+             try {
+                 dispatch(updateTransactionStatus({
+                     transactionId: transaction.transactionId,
+                     status: 'FAILED'
+                 }));
+             } catch (error) {
+                 console.log("Error updating transaction status to - FAILED");
+             }
+        }
     };
 
     return (

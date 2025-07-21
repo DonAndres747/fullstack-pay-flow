@@ -1,24 +1,39 @@
-import { createSlice } from '@reduxjs/toolkit';
-
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { productService } from '../services/productService';
 
+export const getItems = createAsyncThunk(
+    'products/getItems',
+    async () => {
+        const items = await productService.getItems();
+        return items || [];
+    }
+); 
 
-const initialState = await productService.getItems() || [];
+export const updateStock = createAsyncThunk(
+    'products/updateStock',
+    async (payload) => {
+        const response = await productService.updateStock(payload);
+        return response;
+    }
+);
 
 export const ProductSlice = createSlice({
     name: 'products',
-    initialState,
-    reducers: {
-        buyProduct: (state, action) => {
-            const { id, qty } = action.payload;
-            const product = state.find((prod) => prod.id === id);
+    initialState: [],
+    reducers: {},
+    extraReducers: (builder) => {
+        builder
+            .addCase(getItems.fulfilled, (state, action) => {
+                return action.payload;
+            })
+            .addCase(updateStock.fulfilled, (state, action) => {
+                const updatedProduct = action.payload;
+                const index = state.findIndex(p => p.id === updatedProduct.id);
+                if (index !== -1) {
+                    state[index] = updatedProduct;
+                }
+            });
+    },
+});
 
-            if (product && product.stock >= qty) {
-                product.stock -= qty;
-            }
-        }
-    }
-})
-
-export const { buyProduct } = ProductSlice.actions;
 export default ProductSlice.reducer;

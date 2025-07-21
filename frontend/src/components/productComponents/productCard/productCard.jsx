@@ -1,7 +1,7 @@
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import { Card, CardContent, CardActions, Button } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 
 import CreditCardModal from '../../modals/creditCardModal';
@@ -11,9 +11,10 @@ import { setDeliveryInfo, setCardLast4Digits, setProduct, setCardType, setReqQty
 const ProductCard = ({ product }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
- 
+
     const [reqQty, setReqQtity] = useState(1);
     const [modalOpen, setModalOpen] = useState(false);
+
 
     function handleReqQty() {
         const newQty = reqQty <= product.stock ? reqQty : product.stock;
