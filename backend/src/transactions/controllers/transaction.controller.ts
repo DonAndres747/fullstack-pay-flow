@@ -1,14 +1,14 @@
-import { Controller, Post, Body, Param, Get, Patch } from '@nestjs/common';  
+import { Controller, Post, Body, Param, Get, Patch } from '@nestjs/common';
 
 import { TransactionService } from '../services/transaction.service';
 import { TransactionStatus } from '../enums/transaction-status.enum';
 
-@Controller('transactions')
+@Controller('transaction')
 export class TransactionController {
     constructor(private readonly transactionService: TransactionService) { }
 
     @Post()
-    registerTransaction(@Body() body) {
+    registerTransaction(@Body() body) { 
         return this.transactionService.registerTransaction(body);
     }
 

@@ -17,10 +17,7 @@ export class Transaction {
         enum: TransactionStatus,
         default: TransactionStatus.PENDING,
     })
-    status: TransactionStatus;
-
-    @Column({ name: 'transaction_id', nullable: true })
-    transactionId: string;
+    status: TransactionStatus; 
 
     @CreateDateColumn()
     createdAt: Date;

@@ -10,11 +10,11 @@ export class Customer {
     @Column()
     name: string;
 
-    @Column({ nullable: true })
-    email: string;
-
     @Column({ type: 'text', nullable: true })
     address: string;
+
+    @Column({ length: 255 })
+    phone: string;
 
     @OneToMany(() => Transaction, (transaction) => transaction.customer)
     transaction: Transaction[];

@@ -15,9 +15,9 @@ CREATE TABLE product (
 
 CREATE TABLE customer (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  email VARCHAR(255),
-  address TEXT
+  name VARCHAR(255) NOT NULL, 
+  address TEXT,
+  phone VARCHAR(255)
 );
  
 CREATE TABLE transaction (
@@ -25,8 +25,7 @@ CREATE TABLE transaction (
   product_id INT NOT NULL,
   customer_id INT,
   quantity INT NOT NULL DEFAULT 1,
-  status ENUM('PENDING', 'COMPLETED', 'FAILED') DEFAULT 'PENDING',
-  transaction_id VARCHAR(255),
+  status ENUM('PENDING', 'COMPLETED', 'FAILED') DEFAULT 'PENDING', 
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (product_id) REFERENCES product(id),

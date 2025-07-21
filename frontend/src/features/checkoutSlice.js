@@ -1,9 +1,11 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+
+import { customerService } from '../services/customerService';
 
 const oldData = JSON.parse(localStorage.getItem('jsonData'));
-
 const initialState = {
     deliveryInfo: {
+        id: '',
         name: '',
         address: '',
         phone: '',
@@ -15,13 +17,19 @@ const initialState = {
     transactionId: null,
 };
 
+export const getCustomerId = createAsyncThunk(
+    'checkuot/customerId',
+    async (payload) => {
+        const response = await customerService.getCustomerId(payload);
+        return response;
+    }
+);
+
 const checkoutSlice = createSlice({
     name: 'checkout',
     initialState: oldData || initialState,
     reducers: {
         setDeliveryInfo(state, action) {
-            console.log("hola");
-
             state.deliveryInfo = action.payload;
             saveData(state);
         },
@@ -50,6 +58,14 @@ const checkoutSlice = createSlice({
             localStorage.clear();
             return initialState;
         },
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(getCustomerId.fulfilled, (state, action) => {
+                state.deliveryInfo.id = action.payload.id;
+
+                saveData(state);
+            })
     },
 });
 

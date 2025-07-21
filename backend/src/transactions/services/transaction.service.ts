@@ -13,7 +13,8 @@ export class TransactionService {
     ) { }
 
     registerTransaction(data: Partial<Transaction>) {
-        const transaction = this.transactionRepo.create(data);
+        const transaction = this.transactionRepo.create(data); 
+
         return this.transactionRepo.save(transaction);
     }
 
@@ -29,7 +30,7 @@ export class TransactionService {
         if (!transaction) return null;
 
         transaction.status = status;
-        if (transactionId) transaction.transactionId = transactionId;
+        if (id) transaction.id = id;
 
         return this.transactionRepo.save(transaction);
     }

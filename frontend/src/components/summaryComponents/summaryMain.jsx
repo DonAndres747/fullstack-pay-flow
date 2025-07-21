@@ -1,23 +1,17 @@
-import React, { useEffect } from "react"
-import { Button } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from 'react'
+import { Button, Snackbar, Alert } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 
 import getCardIcon from '../../utils/creditCardLogo'
 import styles from './summaryMain.module.css'
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+import { registerTransaction } from '../../features/transactionSlice'
+import { setTransactionId, getCustomerId } from '../../features/checkoutSlice'
 
 const SummaryMain = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const checkout = useSelector((state) => state.checkout);
-
-
-    useEffect(() => {
-
-        if (!checkout.product || !checkout.delivery || !checkout.cardDigits) {
-            navigate('/');
-        }
-
-    }, []);
 
     const delivery = checkout.deliveryInfo;
     const product = checkout.product;
@@ -25,13 +19,37 @@ const SummaryMain = () => {
     const cardDigits = checkout.cardLast4Digits;
     const cardType = checkout.cardType;
 
+    useEffect(() => {
+        if (!checkout.product || !checkout.deliveryInfo || !checkout.cardLast4Digits) {
+            navigate('/');
+        }
+    }, []);
+
+    async function confirmTransaction() {
+        try {
+            const customer = await dispatch(getCustomerId(delivery)).unwrap();
+            const result = await dispatch(registerTransaction({
+                quantity: 1,
+                status: 'PENDING',
+                product,
+                customer
+            })).unwrap();
+
+            dispatch(setTransactionId(result.transactionId));
+
+            alert("Your purchase was successful!")
+        } catch (error) {
+            console.log("error", error);
+            alert("Something went wrong :(")
+        }
+    }
 
     return (
         (checkout.product || checkout.delivery || checkout.cardDigits) ? <div className={styles.summary}>
             <div className={styles.summarTittle}>
                 <h1>Order Summary</h1>
             </div>
-            <img alt="summary" className={styles.progressImg} src="/summary.png" />
+            <img alt='summary' className={styles.progressImg} src='/summary.png' />
             <hr />
             <div className={styles.summaryBody}>
                 <div className={styles.summaryBodyDetails}>
@@ -90,7 +108,7 @@ const SummaryMain = () => {
                             color: 'white',
                         }
                     }}
-                // onClick={() => handleBuy()}
+                    onClick={() => confirmTransaction()}
                 >
                     Complete purchase
                 </Button>
