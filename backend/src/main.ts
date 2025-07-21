@@ -6,10 +6,11 @@ import { AppModule } from './app.module';
 (global as any).crypto = crypto;
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule); 
+  const app = await NestFactory.create(AppModule);
+  const corsOrigins = process.env.CORS_ORIGINS?.split(',');
 
   app.enableCors({
-    origin: ['http://localhost:3000', 'http://192.168.56.1:3000', 'http://192.168.0.4:3000'],
+    origin: corsOrigins
   });
 
   await app.listen(process.env.PORT ?? 3000);
