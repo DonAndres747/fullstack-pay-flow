@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "npx nest build",
+    "build": "npx @nestjs/cli build", 
     "start": "npx nest start",
     "start:prod": "node dist/main",
     "dev": "nest start --watch",
@@ -43,5 +43,8 @@
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.2.2"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }
